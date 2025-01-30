@@ -9,6 +9,7 @@ import {
   Chip,
   Grid,
   Tooltip,
+  useMediaQuery,
 } from '@mui/material';
 import {
   BarChart,
@@ -26,7 +27,6 @@ import TimeChip from './TimeChip';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { styled, useTheme } from '@mui/material/styles';
-import { useMediaQuery } from '@mui/material';
 
 /**
  * Styled Components
@@ -213,7 +213,7 @@ function AnalysisCard({ data }) {
                 top: 20,
                 right: 30,
                 left: 20,
-                bottom: isSmallScreen ? 60 : 30, // Increased bottom margin for rotated labels
+                bottom: isSmallScreen ? 70 : 40, // Increased bottom margin for rotated labels
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
@@ -222,6 +222,7 @@ function AnalysisCard({ data }) {
                 tick={{ fontSize: isSmallScreen ? 10 : 14 }}
                 angle={isSmallScreen ? -45 : 0}
                 textAnchor={isSmallScreen ? 'end' : 'middle'}
+                interval={0} // Ensure all labels are displayed
                 height={isSmallScreen ? 60 : 30} // Increased height for rotated labels
               />
               <YAxis
