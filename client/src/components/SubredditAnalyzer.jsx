@@ -14,11 +14,10 @@ import {
   InputLabel,
   FormControl
 } from '@mui/material';
-import axios from 'axios';
 import AnalysisCard from './AnalysisCard';
 import { useDebounce } from '../hooks/useDebounce';
 import timezones from '../data/timezones'; 
-import axios from 'axios';
+import axios from '../api/axiosConfig';
 
 function SubredditAnalyzer() {
   const [subreddit, setSubreddit] = useState('');

@@ -4,6 +4,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import getTheme from './theme/theme';
 import MainContent from './components/MainContent';
+import About from './components/About';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
   const [mode, setMode] = useState(() => {
@@ -24,7 +26,12 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <MainContent toggleMode={toggleMode} currentMode={mode} />
+      <Router>
+        <Routes>
+          <Route path="/" element={<MainContent toggleMode={toggleMode} currentMode={mode} />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }
