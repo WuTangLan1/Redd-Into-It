@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\User\onedrive\desktop\github\vue3_pinia_secretsanta\redd-into-it\server\venv
+set VIRTUAL_ENV=C:\Users\User\OneDrive\Desktop\GitHub\vue3_pinia_secretsanta\Redd-Into-It\server\venv
 
 if not defined PROMPT set PROMPT=$P$G
 
