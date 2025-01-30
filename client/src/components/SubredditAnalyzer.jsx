@@ -5,7 +5,6 @@ import {
   TextField,
   Button,
   Box,
-  Chip,
   CircularProgress,
   Grid,
   Snackbar,
@@ -18,7 +17,8 @@ import {
 import axios from 'axios';
 import AnalysisCard from './AnalysisCard';
 import { useDebounce } from '../hooks/useDebounce';
-import timezones from '../data/timezones'; // Create a list of timezones
+import timezones from '../data/timezones'; 
+import axios from 'axios';
 
 function SubredditAnalyzer() {
   const [subreddit, setSubreddit] = useState('');
@@ -44,9 +44,9 @@ function SubredditAnalyzer() {
     setAnalysisData(null);
 
     try {
-      const response = await axios.get(`/subreddit/${subreddit}/analysis`, {
-        params: { timezone },
-      });
+        const response = await axios.get(`/subreddit/${subreddit}/analysis`, {
+            params: { timezone },
+          });
       setAnalysisData(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.error) {
