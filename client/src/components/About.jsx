@@ -157,23 +157,6 @@ function About() {
         </Grid>
       </Box>
 
-      {/* Call to Action Section */}
-      <Box sx={{ mt: 6, textAlign: 'center' }}>
-        <Typography variant="h5" gutterBottom>
-          Ready to Optimize Your Reddit Posts?
-        </Typography>
-        <Button
-          component={RouterLink}
-          to="/"
-          variant="contained"
-          color="primary"
-          size="large"
-          startIcon={<InfoIcon />}
-          sx={{ mt: 2 }}
-        >
-          Get Started
-        </Button>
-      </Box>
     </Container>
   );
 }
