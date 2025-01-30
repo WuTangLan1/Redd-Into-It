@@ -25,7 +25,8 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import TimeChip from './TimeChip';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
+import { useMediaQuery } from '@mui/material';
 
 /**
  * Styled Components
@@ -124,6 +125,10 @@ function AnalysisCard({ data }) {
     }
   };
 
+  // Responsive design hooks
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <StyledCard>
       <CardContent>
@@ -202,12 +207,29 @@ function AnalysisCard({ data }) {
             Hourly Post Activity
           </Typography>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={dataForChart} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <BarChart
+              data={dataForChart}
+              margin={{
+                top: 20,
+                right: 30,
+                left: 20,
+                bottom: isSmallScreen ? 60 : 30, // Increased bottom margin for rotated labels
+              }}
+            >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="hour" />
-              <YAxis allowDecimals={false} />
+              <XAxis
+                dataKey="hour"
+                tick={{ fontSize: isSmallScreen ? 10 : 14 }}
+                angle={isSmallScreen ? -45 : 0}
+                textAnchor={isSmallScreen ? 'end' : 'middle'}
+                height={isSmallScreen ? 60 : 30} // Increased height for rotated labels
+              />
+              <YAxis
+                allowDecimals={false}
+                tick={{ fontSize: isSmallScreen ? 10 : 14 }}
+              />
               <RechartsTooltip />
-              <Legend verticalAlign="top" height={36} />
+              {!isSmallScreen && <Legend verticalAlign="top" height={36} />}
               <Bar dataKey="posts" fill="#ff4500" name="Number of Posts">
                 <LabelList dataKey="posts" position="top" />
               </Bar>
