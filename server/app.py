@@ -1,14 +1,104 @@
-# server\app.py
+# server/app.py
 
-from flask import Flask, jsonify
+import os
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+import praw
+from dotenv import load_dotenv
+from collections import defaultdict
+from datetime import datetime
+import pytz
+from flask_caching import Cache
+
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Enable CORS for all routes
 
-@app.route('/api/test')
+reddit = praw.Reddit(
+    client_id=os.getenv("REDDIT_CLIENT_ID"),
+    client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
+    user_agent=os.getenv("REDDIT_USER_AGENT"),
+    redirect_uri=os.getenv("REDDIT_REDIRECT_URI")
+)
+
+@app.route('/api/test', methods=['GET'])
 def test():
-    return jsonify({'message': 'Backend connected!'})
+    return jsonify({'message': 'Backend connected and Reddit API initialized!'})
+
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
+@app.route('/api/subreddit/<string:subreddit_name>/analysis', methods=['GET'])
+@cache.cached(timeout=300, query_string=True)  # Cache for 5 minutes
+def analyze_subreddit(subreddit_name):
+    """
+    Analyzes the specified subreddit to determine the optimal posting times based on recent activity.
+    """
+    try:
+        # Get timezone from query parameters; default to UTC if not provided
+        timezone = request.args.get('timezone', 'UTC')
+
+        # Validate timezone
+        if timezone not in pytz.all_timezones:
+            return jsonify({'error': 'Invalid timezone provided.'}), 400
+
+        # Access the subreddit
+        subreddit = reddit.subreddit(subreddit_name)
+
+        # Fetch the latest 1000 posts for analysis
+        posts = subreddit.new(limit=1000)
+
+        # Initialize a dictionary to count posts per hour
+        hour_counts = defaultdict(int)
+
+        for post in posts:
+            # Convert UTC timestamp to datetime object
+            post_time_utc = datetime.fromtimestamp(post.created_utc, pytz.utc)
+
+            # Convert to user's local timezone
+            local_timezone = pytz.timezone(timezone)
+            post_time_local = post_time_utc.astimezone(local_timezone)
+
+            # Extract the hour (0-23)
+            hour = post_time_local.hour
+
+            # Increment the count for this hour
+            hour_counts[hour] += 1
+
+        # If no posts were found
+        if not hour_counts:
+            return jsonify({'error': 'No posts found in the specified subreddit.'}), 404
+
+        # Prepare data for visualization
+        hourly_post_counts = [hour_counts.get(hour, 0) for hour in range(24)]
+
+        # Determine the maximum post count
+        max_post_count = max(hourly_post_counts)
+
+        # Identify all hours that have the maximum post count (handle ties)
+        optimal_hours = [hour for hour, count in enumerate(hourly_post_counts) if count == max_post_count]
+
+        # Construct the response
+        response = {
+            'subreddit': subreddit_name,
+            'timezone': timezone,
+            'hourly_post_counts': hourly_post_counts,
+            'optimal_hours': optimal_hours,
+            'max_post_count': max_post_count
+        }
+
+        return jsonify(response), 200
+
+    except praw.exceptions.Redirect:
+        # Raised when subreddit does not exist
+        return jsonify({'error': 'Subreddit not found.'}), 404
+    except praw.exceptions.PRAWException as e:
+        # Handle other PRAW exceptions
+        return jsonify({'error': f'Reddit API error: {str(e)}'}), 500
+    except Exception as e:
+        # Handle any other exceptions
+        return jsonify({'error': f'An unexpected error occurred: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
