@@ -1,4 +1,4 @@
-// client\src\assets\theme\themejs
+// client\src\theme\themejs
 
 import { createTheme } from '@mui/material/styles';
 
