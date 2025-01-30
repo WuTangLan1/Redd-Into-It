@@ -25,9 +25,77 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import TimeChip from './TimeChip';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import { styled } from '@mui/material/styles';
 
+/**
+ * Styled Components
+ */
+
+// Styled Card for enhanced responsiveness and styling
+const StyledCard = styled(Card)(({ theme }) => ({
+  marginTop: theme.spacing(4),
+  boxShadow: theme.shadows[5],
+  borderRadius: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
+// Header Section Styling
+const HeaderGrid = styled(Grid)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
+
+// Trend Chip Styling
+const TrendChip = styled(Chip)(({ theme }) => ({
+  fontWeight: 'bold',
+}));
+
+// Optimal Hours Container
+const OptimalHoursContainer = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: theme.spacing(1),
+}));
+
+// Comparative Analysis Container
+const ComparativeAnalysisContainer = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(4),
+}));
+
+// Chart Container with responsive height
+const ChartContainer = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(4),
+  width: '100%',
+  height: 300,
+  [theme.breakpoints.down('sm')]: {
+    height: 250,
+  },
+}));
+
+/**
+ * AnalysisCard Component
+ * Displays the analysis results for a subreddit, including optimal posting times and a visual chart.
+ *
+ * Props:
+ * - data: Object containing analysis data.
+ *   - subreddit: string
+ *   - timezone: string
+ *   - hourly_post_counts: array of 24 integers
+ *   - optimal_hours: array of integers (hours with max posts)
+ *   - max_post_count: integer
+ *   - previous_analysis: (optional) object containing previous max_post_count
+ */
 function AnalysisCard({ data }) {
-  const { subreddit, timezone, optimal_hours, max_post_count, hourly_post_counts, previous_analysis } = data;
+  const {
+    subreddit,
+    timezone,
+    optimal_hours,
+    max_post_count,
+    hourly_post_counts,
+    previous_analysis,
+  } = data;
 
   // Prepare data for the chart
   const dataForChart = hourly_post_counts.map((count, hour) => ({
@@ -44,34 +112,44 @@ function AnalysisCard({ data }) {
       : 'stable'
     : 'stable';
 
-  const trendIcon = () => {
+  // Function to return the appropriate trend icon
+  const getTrendIcon = () => {
     switch (trend) {
       case 'increasing':
-        return <TrendingUpIcon color="success" />;
+        return <TrendingUpIcon color="success" aria-label="Increasing Trend" />;
       case 'decreasing':
-        return <TrendingDownIcon color="error" />;
+        return <TrendingDownIcon color="error" aria-label="Decreasing Trend" />;
       default:
-        return <AccessTimeIcon color="action" />;
+        return <AccessTimeIcon color="action" aria-label="Stable Trend" />;
     }
   };
 
   return (
-    <Card sx={{ mt: 4, boxShadow: 3, borderRadius: 2 }}>
+    <StyledCard>
       <CardContent>
         {/* Header Section */}
-        <Grid container spacing={2} alignItems="center">
+        <HeaderGrid container spacing={2} alignItems="center">
           <Grid item xs={12} md={6}>
-            <Typography variant="h5" gutterBottom>
+            <Typography variant="h5" component="div" gutterBottom>
               Subreddit: {subreddit}
             </Typography>
-            <Typography variant="subtitle1" gutterBottom>
+            <Typography variant="subtitle1" color="textSecondary">
               Timezone: {timezone}
             </Typography>
           </Grid>
-          <Grid item xs={12} md={6} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
-            <Tooltip title={`Current trend: ${trend}`}>
-              <Chip
-                icon={trendIcon()}
+          <Grid
+            item
+            xs={12}
+            md={6}
+            sx={{
+              display: 'flex',
+              justifyContent: { xs: 'flex-start', md: 'flex-end' },
+              alignItems: 'center',
+            }}
+          >
+            <Tooltip title={`Current trend: ${trend}`} arrow>
+              <TrendChip
+                icon={getTrendIcon()}
                 label={`Trend: ${trend.charAt(0).toUpperCase() + trend.slice(1)}`}
                 color={
                   trend === 'increasing'
@@ -80,28 +158,28 @@ function AnalysisCard({ data }) {
                     ? 'error'
                     : 'default'
                 }
-                sx={{ fontWeight: 'bold' }}
               />
             </Tooltip>
           </Grid>
-        </Grid>
+        </HeaderGrid>
 
         {/* Optimal Posting Hours */}
-        <Box sx={{ mt: 2 }}>
+        <Box>
           <Typography variant="body1" gutterBottom>
             Optimal Posting Hour{optimal_hours.length > 1 ? 's' : ''}: {optimal_hours.join(', ')}{' '}
-            {optimal_hours.length > 1 ? 'each with' : 'with'} {max_post_count} posts
+            {optimal_hours.length > 1 ? 'each with' : 'with'} {max_post_count} post
+            {max_post_count > 1 ? 's' : ''}
           </Typography>
-          <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          <OptimalHoursContainer>
             {optimal_hours.map((hour) => (
               <TimeChip key={hour} hour={hour} />
             ))}
-          </Box>
+          </OptimalHoursContainer>
         </Box>
 
         {/* Comparative Analysis */}
         {previous_analysis && (
-          <Box sx={{ mt: 4 }}>
+          <ComparativeAnalysisContainer>
             <Typography variant="h6" gutterBottom>
               Comparative Analysis
             </Typography>
@@ -115,15 +193,15 @@ function AnalysisCard({ data }) {
                 <Typography variant="body2">{max_post_count}</Typography>
               </Grid>
             </Grid>
-          </Box>
+          </ComparativeAnalysisContainer>
         )}
 
         {/* Hourly Post Activity Chart */}
-        <Box sx={{ mt: 4 }}>
+        <ChartContainer>
           <Typography variant="h6" gutterBottom>
             Hourly Post Activity
           </Typography>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={dataForChart} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="hour" />
@@ -135,9 +213,9 @@ function AnalysisCard({ data }) {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </Box>
+        </ChartContainer>
       </CardContent>
-    </Card>
+    </StyledCard>
   );
 }
 
