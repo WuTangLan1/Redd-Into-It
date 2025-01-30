@@ -11,9 +11,9 @@ export function useDebounce(value, delay) {
     }, delay);
 
     return () => {
-      clearTimeout(handler);
+      clearTimeout(handler); // Cleanup function prevents unnecessary executions
     };
   }, [value, delay]);
 
-  return [debouncedValue, setDebouncedValue];
+  return debouncedValue; // Only return the debounced value (not the setter)
 }

@@ -37,6 +37,29 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 def test():
     return jsonify({'message': 'Backend connected and Reddit API initialized!'})
 
+@app.route('/api/subreddit/search', methods=['GET'])
+@limiter.limit("10 per minute") 
+@cache.cached(timeout=300, query_string=True) 
+def search_subreddits():
+    """
+    Searches for subreddits based on a query string.
+    """
+    try:
+        query = request.args.get('q', '')
+        if not query:
+            return jsonify({'error': 'Query parameter "q" is required.'}), 400
+        
+        subreddits = reddit.subreddits.search(query, limit=10)  # Limit to top 10 results
+
+        # Construct a list of subreddit names and titles
+        results = [{'name': subreddit.display_name, 'title': subreddit.title} for subreddit in subreddits]
+
+        return jsonify({'results': results}), 200
+
+    except Exception as e:
+        return jsonify({'error': f'An unexpected error occurred: {str(e)}'}), 500
+
+
 @app.route('/api/subreddit/<string:subreddit_name>/analysis', methods=['GET'])
 @cache.cached(timeout=300, query_string=True)  # Cache for 5 minutes
 def analyze_subreddit(subreddit_name):

@@ -1,40 +1,64 @@
 // client/src/components/SubredditAnalyzer.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  TextField,
   Button,
   Box,
   CircularProgress,
   Grid,
   Snackbar,
   Alert,
-  MenuItem,
+  Autocomplete,
+  FormControl,
   Select,
   InputLabel,
-  FormControl
+  MenuItem,
+  TextField
 } from '@mui/material';
 import AnalysisCard from './AnalysisCard';
 import { useDebounce } from '../hooks/useDebounce';
-import timezones from '../data/timezones'; 
+import timezones from '../data/timezones';
+import { searchSubreddits } from '../api/subredditService';
 import axios from '../api/axiosConfig';
 
 function SubredditAnalyzer() {
-  const [subreddit, setSubreddit] = useState('');
+  const [subreddit, setSubreddit] = useState(null); // Changed to null for Autocomplete
+  const [inputValue, setInputValue] = useState(''); // To track the input value
   const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false); // Loading state for search
   const [error, setError] = useState('');
   const [analysisData, setAnalysisData] = useState(null);
+  const [options, setOptions] = useState([]);
+
+  const debouncedInput = useDebounce(inputValue, 500); // 500ms debounce
+
+  useEffect(() => {
+    if (debouncedInput.trim() === '') {
+      setOptions([]);
+      return;
+    }
+
+    const fetchSubreddits = async () => {
+      setSearchLoading(true);
+      try {
+        const results = await searchSubreddits(debouncedInput.trim());
+        setOptions(results);
+      } catch (errMsg) {
+        setError(errMsg);
+      } finally {
+        setSearchLoading(false);
+      }
+    };
+
+    fetchSubreddits();
+  }, [debouncedInput]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validate input
-    if (!subreddit.trim()) {
-      setError('Please enter a subreddit name.');
-      return;
-    }
-    if (!/^[A-Za-z0-9_]{3,21}$/.test(subreddit.trim())) {
-      setError('Invalid subreddit name. Subreddits must be 3-21 characters and can contain letters, numbers, and underscores.');
+    if (!subreddit || !subreddit.name) {
+      setError('Please select a subreddit from the suggestions.');
       return;
     }
 
@@ -43,9 +67,9 @@ function SubredditAnalyzer() {
     setAnalysisData(null);
 
     try {
-        const response = await axios.get(`/subreddit/${subreddit}/analysis`, {
-            params: { timezone },
-          });
+      const response = await axios.get(`/subreddit/${subreddit.name}/analysis`, {
+        params: { timezone },
+      });
       setAnalysisData(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.error) {
@@ -66,13 +90,36 @@ function SubredditAnalyzer() {
     <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={5}>
-          <TextField
-            fullWidth
-            label="Enter Subreddit"
-            variant="outlined"
+          <Autocomplete
             value={subreddit}
-            onChange={(e) => setSubreddit(e.target.value)}
-            placeholder="e.g., programming"
+            onChange={(event, newValue) => {
+              setSubreddit(newValue);
+            }}
+            inputValue={inputValue}
+            onInputChange={(event, newInputValue) => {
+              setInputValue(newInputValue);
+            }}
+            options={options}
+            getOptionLabel={(option) => `${option.name} - ${option.title}`}
+            loading={searchLoading}
+            noOptionsText="No subreddits found"
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Enter Subreddit"
+                variant="outlined"
+                placeholder="e.g., programming"
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <>
+                      {searchLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                      {params.InputProps.endAdornment}
+                    </>
+                  ),
+                }}
+              />
+            )}
           />
         </Grid>
         <Grid item xs={12} sm={5}>
