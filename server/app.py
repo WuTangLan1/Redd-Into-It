@@ -9,11 +9,13 @@ from collections import defaultdict
 from datetime import datetime
 import pytz
 from flask_caching import Cache
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app) 
 
 reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_CLIENT_ID"),
@@ -22,11 +24,18 @@ reddit = praw.Reddit(
     redirect_uri=os.getenv("REDDIT_REDIRECT_URI")
 )
 
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
+limiter.init_app(app)  
+
+
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
 @app.route('/api/test', methods=['GET'])
 def test():
     return jsonify({'message': 'Backend connected and Reddit API initialized!'})
-
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 @app.route('/api/subreddit/<string:subreddit_name>/analysis', methods=['GET'])
 @cache.cached(timeout=300, query_string=True)  # Cache for 5 minutes
