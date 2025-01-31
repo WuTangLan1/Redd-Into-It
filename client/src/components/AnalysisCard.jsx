@@ -22,6 +22,7 @@ import {
   CartesianGrid,
   Legend,
   LabelList,
+  Cell,
 } from 'recharts';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import TimeChip from './TimeChip';
@@ -74,11 +75,39 @@ const ComparativeAnalysisContainer = styled(Box)(({ theme }) => ({
 const ChartContainer = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(4),
   width: '100%',
-  height: 350,
+  height: 400,
   [theme.breakpoints.down('sm')]: {
-    height: 250,
+    height: 300,
   },
 }));
+
+/**
+ * Customized Tooltip Content
+ */
+const CustomTooltip = ({ active, payload, label, theme }) => {
+  if (active && payload && payload.length) {
+    return (
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
+          padding: theme.spacing(1),
+          borderRadius: 1,
+          boxShadow: theme.shadows[3],
+        }}
+      >
+        <Typography variant="subtitle2" color="textPrimary">
+          {label}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          Posts: {payload[0].value}
+        </Typography>
+      </Box>
+    );
+  }
+
+  return null;
+};
 
 /**
  * AnalysisCard Component
@@ -133,6 +162,9 @@ function AnalysisCard({ data }) {
   // Responsive design hooks
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Define colors for bars based on theme
+  const barColor = theme.palette.mode === 'light' ? '#FF5700' : '#FF8E53';
 
   return (
     <Fade in={true} timeout={1000}>
@@ -262,23 +294,32 @@ function AnalysisCard({ data }) {
                   }}
                 />
                 <RechartsTooltip
-                  contentStyle={{
-                    backgroundColor: theme.palette.background.paper,
-                    border: `1px solid ${theme.palette.divider}`,
-                  }}
-                  labelStyle={{ color: theme.palette.text.primary }}
-                  itemStyle={{ color: theme.palette.text.primary }}
+                  content={<CustomTooltip theme={theme} />}
+                  cursor={{ fill: 'rgba(255, 87, 0, 0.1)' }}
                 />
-                {!isSmallScreen && (
-                  <Legend verticalAlign="top" height={36} />
-                )}
+                {!isSmallScreen && <Legend verticalAlign="top" height={36} />}
                 <Bar
                   dataKey="posts"
-                  fill="#ff4500"
                   name="Number of Posts"
                   isAnimationActive={true}
+                  animationDuration={1500}
                 >
-                  <LabelList dataKey="posts" position="top" />
+                  {dataForChart.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={
+                        entry.posts === max_post_count
+                          ? theme.palette.success.main
+                          : barColor
+                      }
+                    />
+                  ))}
+                  <LabelList
+                    dataKey="posts"
+                    position="top"
+                    fill={theme.palette.text.primary}
+                    fontSize={isSmallScreen ? 10 : 12}
+                  />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
