@@ -61,8 +61,6 @@ const HeroSection = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   borderRadius: theme.spacing(2),
   marginTop: theme.spacing(4),
-  background: `linear-gradient(135deg, ${theme.palette.primary.light} 30%, ${theme.palette.primary.dark} 90%)`,
-  color: theme.palette.common.white,
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(6, 1),
   },
@@ -261,7 +259,7 @@ function MainContent({ toggleMode, currentMode }) {
         </HeroSubtitle>
         <CTAButton
           variant="contained"
-          color="secondary"
+          color="tertiary"
           size="large"
           onClick={scrollToAnalyzer}
         >
@@ -324,23 +322,6 @@ function MainContent({ toggleMode, currentMode }) {
                 </Typography>
               </FeatureItem>
             </Grid>
-            {/* Additional Feature (Optional) */}
-            {/* <Grid item xs={12} sm={6} md={4}>
-              <FeatureItem>
-                <FeatureImage
-                  src="/icons/another-feature.svg"
-                  alt="Another Feature"
-                  width="60"
-                  height="60"
-                />
-                <Typography variant="h6" gutterBottom>
-                  Another Feature
-                </Typography>
-                <Typography variant="body1">
-                  Description of another feature.
-                </Typography>
-              </FeatureItem>
-            </Grid> */}
           </Grid>
         </Container>
       </FeatureSection>

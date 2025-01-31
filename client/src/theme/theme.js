@@ -12,6 +12,9 @@ const getTheme = (mode) =>
       secondary: {
         main: mode === 'light' ? '#dc004e' : '#f48fb1',
       },
+      tertiary: {
+        main: mode === 'light' ? '#ff6000' : '#ff721d',
+      },
       background: {
         default: mode === 'light' ? '#f5f5f5' : '#121212',
         paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
