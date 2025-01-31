@@ -1,6 +1,6 @@
 // client/src/components/MainContent.jsx
 
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Container,
   AppBar,
@@ -150,9 +150,19 @@ function MainContent({ toggleMode, currentMode }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  
+  // Reference to the SubredditAnalyzer component
+  const analyzerRef = useRef(null);
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
+  };
+
+  // Function to scroll to SubredditAnalyzer smoothly
+  const scrollToAnalyzer = () => {
+    if (analyzerRef.current) {
+      analyzerRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const drawer = (
@@ -235,8 +245,7 @@ function MainContent({ toggleMode, currentMode }) {
           variant="contained"
           color="secondary"
           size="large"
-          component={RouterLink}
-          to="#analyze"
+          onClick={scrollToAnalyzer}
         >
           Get Started
         </CTAButton>
@@ -370,7 +379,7 @@ function MainContent({ toggleMode, currentMode }) {
       </HowItWorksSection>
 
       {/* Main Analyzer Section */}
-      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }} ref={analyzerRef}>
         <SubredditAnalyzer id="analyze" />
       </Container>
 
@@ -382,7 +391,7 @@ function MainContent({ toggleMode, currentMode }) {
           py: 3,
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="xl">
           <Grid container spacing={2} justifyContent="space-between" alignItems="center">
             <Grid item>
               <Typography variant="body1">
