@@ -71,11 +71,13 @@ const ComparativeAnalysisContainer = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(4),
 }));
 
-// Chart Container with responsive height
+// Chart Container with responsive height and no horizontal padding
 const ChartContainer = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(4),
   width: '100%',
   height: 400,
+  paddingLeft: 0, // Remove left padding
+  paddingRight: 0, // Remove right padding
   [theme.breakpoints.down('sm')]: {
     height: 300,
   },
@@ -109,6 +111,19 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
   return null;
 };
 
+/**
+ * AnalysisCard Component
+ * Displays the analysis results for a subreddit, including optimal posting times and a visual chart.
+ *
+ * Props:
+ * - data: Object containing analysis data.
+ *   - subreddit: string
+ *   - timezone: string
+ *   - hourly_post_counts: array of 24 integers
+ *   - optimal_hours: array of integers (hours with max posts)
+ *   - max_post_count: integer
+ *   - previous_analysis: (optional) object containing previous max_post_count
+ */
 function AnalysisCard({ data }) {
   const {
     subreddit,
@@ -156,59 +171,61 @@ function AnalysisCard({ data }) {
   return (
     <Fade in={true} timeout={1000}>
       <StyledCard>
-        <CardContent>
+        <CardContent sx={{ padding: 0 }}> {/* Remove default padding */}
           {/* Header Section */}
-          <HeaderGrid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <Typography variant="h5" component="div" gutterBottom>
-                <strong>Subreddit:</strong> {subreddit}
-              </Typography>
-              <Typography variant="subtitle1" color="textSecondary">
-                <strong>Timezone:</strong> {timezone}
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              md={6}
-              sx={{
-                display: 'flex',
-                justifyContent: { xs: 'flex-start', md: 'flex-end' },
-                alignItems: 'center',
-              }}
-            >
-              <Tooltip title={`Current trend: ${trend}`} arrow>
-                <TrendChip
-                  icon={getTrendIcon()}
-                  label={`Trend: ${trend.charAt(0).toUpperCase() + trend.slice(1)}`}
-                  color={
-                    trend === 'increasing'
-                      ? 'success'
-                      : trend === 'decreasing'
-                      ? 'error'
-                      : 'default'
-                  }
-                  sx={{
-                    backgroundColor:
+          <Box sx={{ padding: 3 }}> {/* Add custom padding if needed */}
+            <HeaderGrid container spacing={2} alignItems="center">
+              <Grid item xs={12} md={6}>
+                <Typography variant="h5" component="div" gutterBottom>
+                  <strong>Subreddit:</strong> {subreddit}
+                </Typography>
+                <Typography variant="subtitle1" color="textSecondary">
+                  <strong>Timezone:</strong> {timezone}
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                md={6}
+                sx={{
+                  display: 'flex',
+                  justifyContent: { xs: 'flex-start', md: 'flex-end' },
+                  alignItems: 'center',
+                }}
+              >
+                <Tooltip title={`Current trend: ${trend}`} arrow>
+                  <TrendChip
+                    icon={getTrendIcon()}
+                    label={`Trend: ${trend.charAt(0).toUpperCase() + trend.slice(1)}`}
+                    color={
                       trend === 'increasing'
-                        ? theme.palette.success.light
+                        ? 'success'
                         : trend === 'decreasing'
-                        ? theme.palette.error.light
-                        : theme.palette.grey[300],
-                    color:
-                      trend === 'increasing'
-                        ? theme.palette.success.contrastText
-                        : trend === 'decreasing'
-                        ? theme.palette.error.contrastText
-                        : theme.palette.text.primary,
-                  }}
-                />
-              </Tooltip>
-            </Grid>
-          </HeaderGrid>
+                        ? 'error'
+                        : 'default'
+                    }
+                    sx={{
+                      backgroundColor:
+                        trend === 'increasing'
+                          ? theme.palette.success.light
+                          : trend === 'decreasing'
+                          ? theme.palette.error.light
+                          : theme.palette.grey[300],
+                      color:
+                        trend === 'increasing'
+                          ? theme.palette.success.contrastText
+                          : trend === 'decreasing'
+                          ? theme.palette.error.contrastText
+                          : theme.palette.text.primary,
+                    }}
+                  />
+                </Tooltip>
+              </Grid>
+            </HeaderGrid>
+          </Box>
 
           {/* Optimal Posting Hours */}
-          <Box>
+          <Box sx={{ padding: 3 }}> {/* Add custom padding if needed */}
             <Typography variant="body1" gutterBottom>
               <strong>Optimal Posting Hour{optimal_hours.length > 1 ? 's' : ''}:</strong>{' '}
               {optimal_hours.join(', ')} {optimal_hours.length > 1 ? 'each with' : 'with'}{' '}
@@ -223,32 +240,34 @@ function AnalysisCard({ data }) {
 
           {/* Comparative Analysis */}
           {previous_analysis && (
-            <ComparativeAnalysisContainer>
-              <Typography variant="h6" gutterBottom>
-                Comparative Analysis
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1">
-                    <strong>Previous Max Posts:</strong>
-                  </Typography>
-                  <Typography variant="body2">
-                    {previous_analysis.max_post_count}
-                  </Typography>
+            <Box sx={{ padding: 3 }}> {/* Add custom padding if needed */}
+              <ComparativeAnalysisContainer>
+                <Typography variant="h6" gutterBottom>
+                  Comparative Analysis
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="subtitle1">
+                      <strong>Previous Max Posts:</strong>
+                    </Typography>
+                    <Typography variant="body2">
+                      {previous_analysis.max_post_count}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="subtitle1">
+                      <strong>Current Max Posts:</strong>
+                    </Typography>
+                    <Typography variant="body2">{max_post_count}</Typography>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1">
-                    <strong>Current Max Posts:</strong>
-                  </Typography>
-                  <Typography variant="body2">{max_post_count}</Typography>
-                </Grid>
-              </Grid>
-            </ComparativeAnalysisContainer>
+              </ComparativeAnalysisContainer>
+            </Box>
           )}
 
           {/* Hourly Post Activity Chart */}
           <ChartContainer>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom sx={{ paddingLeft: 3, paddingRight: 3 }}>
               Hourly Post Activity
             </Typography>
             <ResponsiveContainer width="100%" height="100%">
@@ -275,6 +294,7 @@ function AnalysisCard({ data }) {
                   allowDecimals={false}
                   tick={{ fontSize: isSmallScreen ? 10 : 14 }}
                   label={{
+                    value: 'Posts',
                     angle: -90,
                     position: 'insideLeft',
                     style: { textAnchor: 'middle' },
@@ -290,6 +310,7 @@ function AnalysisCard({ data }) {
                   name="Number of Posts"
                   isAnimationActive={true}
                   animationDuration={1500}
+                  radius={[10, 10, 0, 0]} // Rounded top corners
                 >
                   {dataForChart.map((entry, index) => (
                     <Cell
