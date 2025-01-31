@@ -276,13 +276,14 @@ function AnalysisCard({ data }) {
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
-                  dataKey="hour"
-                  tick={{ fontSize: isSmallScreen ? 10 : 14 }}
-                  angle={isSmallScreen ? -45 : 0}
-                  textAnchor={isSmallScreen ? 'end' : 'middle'}
-                  interval={0} // Ensure all labels are displayed
-                  height={isSmallScreen ? 60 : 40} // Increased height for rotated labels
-                />
+  dataKey="hour"
+  tick={{ fontSize: isSmallScreen ? 10 : 14 }}
+  angle={isSmallScreen ? -45 : 0}
+  textAnchor={isSmallScreen ? 'end' : 'middle'}
+  interval={1} // Displays every second label (i.e., only half)
+  height={isSmallScreen ? 60 : 40}
+/>
+
                 <YAxis
                   allowDecimals={false}
                   tick={{ fontSize: isSmallScreen ? 10 : 14 }}
