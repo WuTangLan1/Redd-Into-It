@@ -24,11 +24,20 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Logo from '../assets/redd-into-it-logo.png';
+import helpfulMonkey1 from '../assets/helpfulmonkey_1.png';
+import helpfulMonkey2 from '../assets/helpfulmonkey_2.png';
+import helpfulMonkey3 from '../assets/helpfulmonkey_3.png';
 
+/**
+ * Styled Components
+ */
+
+// Styled AppBar to include logo and enhance layout
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
 }));
 
+// Logo Image Styling
 const LogoImage = styled('img')(({ theme }) => ({
   height: '40px',
   marginRight: theme.spacing(2),
@@ -42,12 +51,14 @@ const LogoImage = styled('img')(({ theme }) => ({
   },
 }));
 
+// Hero Section Styling with background gradient
 const HeroSection = styled(Box)(({ theme }) => ({
   padding: theme.spacing(8, 2),
   textAlign: 'center',
   borderRadius: theme.spacing(2),
   marginTop: theme.spacing(4),
-  color: theme.palette.common.grey,
+  background: `linear-gradient(135deg, ${theme.palette.primary.light} 30%, ${theme.palette.primary.dark} 90%)`,
+  color: theme.palette.common.white,
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(6, 1),
   },
@@ -71,7 +82,7 @@ const HeroSubtitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-// Feature Section Styling
+// Features Section Styling
 const FeatureSection = styled(Box)(({ theme }) => ({
   padding: theme.spacing(6, 2),
   backgroundColor: theme.palette.background.paper,
@@ -86,11 +97,53 @@ const FeatureSection = styled(Box)(({ theme }) => ({
 const FeatureItem = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   padding: theme.spacing(2),
+  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+  borderRadius: theme.spacing(1),
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: theme.shadows[4],
+  },
 }));
 
 // Call-to-Action Button Styling
 const CTAButton = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(2),
+  padding: theme.spacing(1.5, 4),
+  fontSize: '1rem',
+}));
+
+// How It Works Section Styling
+const HowItWorksSection = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(6, 2),
+  backgroundColor: theme.palette.background.default,
+  borderRadius: theme.spacing(2),
+  marginTop: theme.spacing(4),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(4, 1),
+  },
+}));
+
+// Step Item Styling
+const StepItem = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(2),
+  transition: 'background-color 0.3s ease',
+  borderRadius: theme.spacing(1),
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
+
+// Monkey Image Styling
+const MonkeyImage = styled('img')(({ theme }) => ({
+  width: '80px',
+  height: '80px',
+  marginRight: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    width: '60px',
+    height: '60px',
+  },
 }));
 
 function MainContent({ toggleMode, currentMode }) {
@@ -178,6 +231,15 @@ function MainContent({ toggleMode, currentMode }) {
         <HeroSubtitle variant="h6">
           Discover the best times to post on your favorite subreddits and maximize your engagement.
         </HeroSubtitle>
+        <CTAButton
+          variant="contained"
+          color="secondary"
+          size="large"
+          component={RouterLink}
+          to="#analyze"
+        >
+          Get Started
+        </CTAButton>
       </HeroSection>
 
       {/* Features Section */}
@@ -241,47 +303,71 @@ function MainContent({ toggleMode, currentMode }) {
       </FeatureSection>
 
       {/* How It Works Section */}
-      <FeatureSection>
+      <HowItWorksSection>
         <Container maxWidth="lg">
           <Typography variant="h4" align="center" gutterBottom>
             How It Works
           </Typography>
           <Grid container spacing={4}>
+            {/* Step 1 */}
             <Grid item xs={12} md={6}>
-              <Typography variant="h6" gutterBottom>
-                Step 1: Search Subreddit
-              </Typography>
-              <Typography variant="body1">
-                Enter the name of any subreddit to begin analyzing its posting patterns.
-              </Typography>
+              <StepItem>
+                <MonkeyImage src={helpfulMonkey1} alt="Step 1: Search Subreddit" />
+                <Box>
+                  <Typography variant="h6" gutterBottom>
+                    Step 1: Search Subreddit
+                  </Typography>
+                  <Typography variant="body1">
+                    Enter the name of any subreddit to begin analyzing its posting patterns.
+                  </Typography>
+                </Box>
+              </StepItem>
             </Grid>
+            {/* Step 2 */}
             <Grid item xs={12} md={6}>
-              <Typography variant="h6" gutterBottom>
-                Step 2: Analyze Data
-              </Typography>
-              <Typography variant="body1">
-                Our tool fetches the latest posts and analyzes them to determine peak engagement times.
-              </Typography>
+              <StepItem>
+                <MonkeyImage src={helpfulMonkey2} alt="Step 2: Analyze Data" />
+                <Box>
+                  <Typography variant="h6" gutterBottom>
+                    Step 2: Analyze Data
+                  </Typography>
+                  <Typography variant="body1">
+                    Our tool fetches the latest posts and analyzes them to determine peak engagement times.
+                  </Typography>
+                </Box>
+              </StepItem>
             </Grid>
+            {/* Step 3 */}
             <Grid item xs={12} md={6}>
-              <Typography variant="h6" gutterBottom>
-                Step 3: Optimize Your Posts
-              </Typography>
-              <Typography variant="body1">
-                Use the insights to schedule your posts when they're most likely to be seen and interacted with.
-              </Typography>
+              <StepItem>
+                <MonkeyImage src={helpfulMonkey3} alt="Step 3: Optimize Your Posts" />
+                <Box>
+                  <Typography variant="h6" gutterBottom>
+                    Step 3: Optimize Your Posts
+                  </Typography>
+                  <Typography variant="body1">
+                    Use the insights to schedule your posts when they're most likely to be seen and interacted with.
+                  </Typography>
+                </Box>
+              </StepItem>
             </Grid>
+            {/* Step 4 */}
             <Grid item xs={12} md={6}>
-              <Typography variant="h6" gutterBottom>
-                Step 4: Track Performance
-              </Typography>
-              <Typography variant="body1">
-                Monitor how your posts perform over time and adjust your strategy accordingly.
-              </Typography>
+              <StepItem>
+                <MonkeyImage src={helpfulMonkey1} alt="Step 4: Track Performance" />
+                <Box>
+                  <Typography variant="h6" gutterBottom>
+                    Step 4: Track Performance
+                  </Typography>
+                  <Typography variant="body1">
+                    Monitor how your posts perform over time and adjust your strategy accordingly.
+                  </Typography>
+                </Box>
+              </StepItem>
             </Grid>
           </Grid>
         </Container>
-      </FeatureSection>
+      </HowItWorksSection>
 
       {/* Main Analyzer Section */}
       <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
