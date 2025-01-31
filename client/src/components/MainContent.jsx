@@ -23,18 +23,12 @@ import SubredditAnalyzer from './SubredditAnalyzer';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Logo from '../assets/redd-into-it-logo.png'; // Importing the logo image
+import Logo from '../assets/redd-into-it-logo.png';
 
-/**
- * Styled Components
- */
-
-// Styled AppBar to include logo and enhance layout
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
 }));
 
-// Logo Image Styling
 const LogoImage = styled('img')(({ theme }) => ({
   height: '40px',
   marginRight: theme.spacing(2),
@@ -48,14 +42,12 @@ const LogoImage = styled('img')(({ theme }) => ({
   },
 }));
 
-// Hero Section Styling with background gradient
 const HeroSection = styled(Box)(({ theme }) => ({
   padding: theme.spacing(8, 2),
   textAlign: 'center',
   borderRadius: theme.spacing(2),
   marginTop: theme.spacing(4),
-  background: `linear-gradient(135deg, ${theme.palette.primary.light} 30%, ${theme.palette.primary.dark} 90%)`,
-  color: theme.palette.common.white,
+  color: theme.palette.common.grey,
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(6, 1),
   },

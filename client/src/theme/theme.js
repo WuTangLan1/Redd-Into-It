@@ -7,18 +7,51 @@ const getTheme = (mode) =>
     palette: {
       mode,
       primary: {
-        main: '#ff4500', // Reddit's orange
+        main: mode === 'light' ? '#1976d2' : '#90caf9',
       },
       secondary: {
-        main: '#00ff00',
+        main: mode === 'light' ? '#dc004e' : '#f48fb1',
       },
       background: {
-        default: mode === 'light' ? '#ffffff' : '#242424',
-        paper: mode === 'light' ? '#ffffff' : '#333333',
+        default: mode === 'light' ? '#f5f5f5' : '#121212',
+        paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
+      },
+      text: {
+        primary: mode === 'light' ? '#000000' : '#ffffff',
+        secondary: mode === 'light' ? '#555555' : '#bbbbbb',
       },
     },
     typography: {
-      fontFamily: 'Segoe UI, Arial, sans-serif',
+      fontFamily: 'Roboto, sans-serif',
+      h3: {
+        fontWeight: 700,
+      },
+      h4: {
+        fontWeight: 700,
+      },
+      h6: {
+        fontWeight: 600,
+      },
+      body1: {
+        lineHeight: 1.6,
+      },
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: '8px',
+            textTransform: 'none',
+          },
+        },
+      },
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            boxShadow: 'none',
+          },
+        },
+      },
     },
   });
 
