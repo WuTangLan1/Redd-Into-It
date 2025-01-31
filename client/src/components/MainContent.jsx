@@ -191,9 +191,6 @@ function MainContent({ toggleMode, currentMode }) {
         <ListItem button component={RouterLink} to="/">
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem button component={RouterLink} to="/about">
-          <ListItemText primary="About" />
-        </ListItem>
       </List>
     </Box>
   );
@@ -222,10 +219,6 @@ function MainContent({ toggleMode, currentMode }) {
                   Redd-Into-It
                 </Link>
               </Typography>
-              {/* Navigation Links */}
-              <Button component={RouterLink} to="/about" color="inherit" sx={{ mr: 2 }}>
-                About
-              </Button>
             </>
           )}
           {/* Theme Toggle Button with Tooltip */}
@@ -413,11 +406,6 @@ function MainContent({ toggleMode, currentMode }) {
               <Typography variant="body1">
                 &copy; {new Date().getFullYear()} Redd-Into-It. All rights reserved.
               </Typography>
-            </Grid>
-            <Grid item>
-              <Link component={RouterLink} to="/about" color="inherit" underline="hover">
-                About
-              </Link>
             </Grid>
           </Grid>
         </Container>
