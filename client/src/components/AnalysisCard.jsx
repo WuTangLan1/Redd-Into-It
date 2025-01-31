@@ -109,19 +109,6 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
   return null;
 };
 
-/**
- * AnalysisCard Component
- * Displays the analysis results for a subreddit, including optimal posting times and a visual chart.
- *
- * Props:
- * - data: Object containing analysis data.
- *   - subreddit: string
- *   - timezone: string
- *   - hourly_post_counts: array of 24 integers
- *   - optimal_hours: array of integers (hours with max posts)
- *   - max_post_count: integer
- *   - previous_analysis: (optional) object containing previous max_post_count
- */
 function AnalysisCard({ data }) {
   const {
     subreddit,
@@ -276,19 +263,18 @@ function AnalysisCard({ data }) {
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
-  dataKey="hour"
-  tick={{ fontSize: isSmallScreen ? 10 : 14 }}
-  angle={isSmallScreen ? -45 : 0}
-  textAnchor={isSmallScreen ? 'end' : 'middle'}
-  interval={1} // Displays every second label (i.e., only half)
-  height={isSmallScreen ? 60 : 40}
-/>
+                  dataKey="hour"
+                  tick={{ fontSize: isSmallScreen ? 10 : 14 }}
+                  angle={isSmallScreen ? -45 : 0}
+                  textAnchor={isSmallScreen ? 'end' : 'middle'}
+                  interval={1} // Displays every second label (i.e., only half)
+                  height={isSmallScreen ? 60 : 40}
+                />
 
                 <YAxis
                   allowDecimals={false}
                   tick={{ fontSize: isSmallScreen ? 10 : 14 }}
                   label={{
-                    value: 'Posts',
                     angle: -90,
                     position: 'insideLeft',
                     style: { textAnchor: 'middle' },
