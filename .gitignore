@@ -9,6 +9,7 @@ __pycache__/
 node_modules/
 dist/
 .env.local
+.env.production
 
 # General
 .DS_Store
