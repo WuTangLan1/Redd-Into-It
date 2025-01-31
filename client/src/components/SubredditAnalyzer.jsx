@@ -13,7 +13,9 @@ import {
   Select,
   InputLabel,
   MenuItem,
-  TextField
+  TextField,
+  Stack,
+  Typography,
 } from '@mui/material';
 import AnalysisCard from './AnalysisCard';
 import { useDebounce } from '../hooks/useDebounce';
@@ -28,6 +30,7 @@ function SubredditAnalyzer() {
   const [loading, setLoading] = useState(false); // Loading state for analysis
   const [searchLoading, setSearchLoading] = useState(false); // Loading state for search
   const [error, setError] = useState(''); // Error message
+  const [success, setSuccess] = useState(''); // Success message
   const [analysisData, setAnalysisData] = useState(null); // Analysis result
   const [options, setOptions] = useState([]); // Subreddit suggestions
 
@@ -65,6 +68,7 @@ function SubredditAnalyzer() {
 
     setLoading(true);
     setError('');
+    setSuccess('');
     setAnalysisData(null);
 
     try {
@@ -73,6 +77,7 @@ function SubredditAnalyzer() {
       });
       console.log('Analysis Response:', response.data); // Log successful response
       setAnalysisData(response.data);
+      setSuccess('Analysis completed successfully!');
     } catch (err) {
       console.error('Analyze Subreddit Error:', err); // Log error
       if (err.response && err.response.data && err.response.data.error) {
@@ -87,86 +92,128 @@ function SubredditAnalyzer() {
 
   const handleCloseSnackbar = () => {
     setError('');
+    setSuccess('');
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
-      <Grid container spacing={2} alignItems="center">
-        {/* Subreddit Input */}
-        <Grid item xs={12} sm={5}>
-          <Autocomplete
-            value={subreddit}
-            onChange={(event, newValue) => setSubreddit(newValue)}
-            inputValue={inputValue}
-            onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-            options={options}
-            getOptionLabel={(option) => `${option.name} - ${option.title}`}
-            loading={searchLoading}
-            noOptionsText="No subreddits found"
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Enter Subreddit"
-                variant="outlined"
-                placeholder="e.g., programming"
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <>
-                      {searchLoading ? <CircularProgress color="inherit" size={20} /> : null}
-                      {params.InputProps.endAdornment}
-                    </>
-                  ),
-                }}
-              />
-            )}
-          />
-        </Grid>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        mb: 4,
+        p: 3,
+        backgroundColor: (theme) => theme.palette.background.paper,
+        borderRadius: 2,
+        boxShadow: 3,
+      }}
+    >
+      <Stack spacing={3}>
+        <Typography variant="h5" align="center" gutterBottom>
+          Analyze Subreddit Posting Times
+        </Typography>
+        <Grid container spacing={2} alignItems="center">
+          {/* Subreddit Input */}
+          <Grid item xs={12} md={5}>
+            <Autocomplete
+              value={subreddit}
+              onChange={(event, newValue) => setSubreddit(newValue)}
+              inputValue={inputValue}
+              onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+              options={options}
+              getOptionLabel={(option) => `${option.name} - ${option.title}`}
+              loading={searchLoading}
+              noOptionsText="No subreddits found"
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Enter Subreddit"
+                  variant="outlined"
+                  placeholder="e.g., programming"
+                  fullWidth
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {searchLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                        {params.InputProps.endAdornment}
+                      </>
+                    ),
+                  }}
+                />
+              )}
+            />
+          </Grid>
 
-        {/* Timezone Selection */}
-        <Grid item xs={12} sm={5}>
-          <FormControl fullWidth>
-            <InputLabel id="timezone-label">Timezone</InputLabel>
-            <Select
-              labelId="timezone-label"
-              id="timezone-select"
-              value={timezone}
-              label="Timezone"
-              onChange={(e) => setTimezone(e.target.value)}
+          {/* Timezone Selection */}
+          <Grid item xs={12} md={5}>
+            <FormControl fullWidth>
+              <InputLabel id="timezone-label">Timezone</InputLabel>
+              <Select
+                labelId="timezone-label"
+                id="timezone-select"
+                value={timezone}
+                label="Timezone"
+                onChange={(e) => setTimezone(e.target.value)}
+              >
+                {timezones.map((tz) => (
+                  <MenuItem key={tz} value={tz}>
+                    {tz}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* Analyze Button */}
+          <Grid item xs={12} md={2}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={loading}
+              startIcon={loading && <CircularProgress size={20} />}
+              sx={{
+                height: '56px',
+                transition: 'transform 0.2s, background-color 0.2s',
+                '&:hover': {
+                  transform: 'scale(1.02)',
+                  backgroundColor: (theme) => theme.palette.primary.dark,
+                },
+              }}
             >
-              {timezones.map((tz) => (
-                <MenuItem key={tz} value={tz}>
-                  {tz}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+              {loading ? 'Analyzing...' : 'Analyze'}
+            </Button>
+          </Grid>
         </Grid>
 
-        {/* Analyze Button */}
-        <Grid item xs={12} sm={2}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            disabled={loading}
-            startIcon={loading && <CircularProgress size={20} />}
-          >
-            {loading ? 'Analyzing...' : 'Analyze'}
-          </Button>
-        </Grid>
-      </Grid>
+        {/* Display Analysis Data */}
+        {analysisData && <AnalysisCard data={analysisData} />}
 
-      {/* Display Analysis Data */}
-      {analysisData && <AnalysisCard data={analysisData} />}
+        {/* Error Snackbar */}
+        <Snackbar
+          open={!!error}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+            {error}
+          </Alert>
+        </Snackbar>
 
-      {/* Error Snackbar */}
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
-          {error}
-        </Alert>
-      </Snackbar>
+        {/* Success Snackbar */}
+        <Snackbar
+          open={!!success}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+            {success}
+          </Alert>
+        </Snackbar>
+      </Stack>
     </Box>
   );
 }
