@@ -81,6 +81,15 @@ const ChartContainer = styled(Box)(({ theme }) => ({
 }));
 
 /**
+ * Utility Function to Convert 24-Hour Format to 12-Hour Format with AM/PM
+ */
+const convertTo12HourFormat = (hour) => {
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${hour12}:00 ${period}`;
+};
+
+/**
  * Customized Tooltip Content
  */
 const CustomTooltip = ({ active, payload, label, theme }) => {
@@ -133,7 +142,7 @@ function AnalysisCard({ data }) {
 
   // Prepare data for the chart
   const dataForChart = hourly_post_counts.map((count, hour) => ({
-    hour: `${hour}:00`,
+    hour: convertTo12HourFormat(hour),
     posts: count,
   }));
 
@@ -225,8 +234,14 @@ function AnalysisCard({ data }) {
           <Box sx={{ padding: 3 }}> {/* Add custom padding if needed */}
             <Typography variant="body1" gutterBottom>
               <strong>Optimal Posting Hour{optimal_hours.length > 1 ? 's' : ''}:</strong>{' '}
-              {optimal_hours.join(', ')} {optimal_hours.length > 1 ? 'each with' : 'with'}{' '}
-              {max_post_count} post{max_post_count > 1 ? 's' : ''}
+              {optimal_hours.map((hour, index) => (
+                <span key={hour}>
+                  {convertTo12HourFormat(hour)}
+                  {index < optimal_hours.length - 1 ? ', ' : ''}
+                </span>
+              ))}{' '}
+              {optimal_hours.length > 1 ? 'each with' : 'with'} {max_post_count} post
+              {max_post_count > 1 ? 's' : ''}
             </Typography>
             <OptimalHoursContainer>
               {optimal_hours.map((hour) => (
