@@ -27,6 +27,10 @@ import Logo from '../assets/redd-into-it-logo.png';
 import helpfulMonkey1 from '../assets/helpfulmonkey_1.png';
 import helpfulMonkey2 from '../assets/helpfulmonkey_2.png';
 import helpfulMonkey3 from '../assets/helpfulmonkey_3.png';
+import helpfulMonkey4 from '../assets/helpfulmonkey_4.png';
+import helpfulMonkeyBestTime from '../assets/helpfulmonkey_besttime.png';
+import helpfulMonkeyDataViz from '../assets/helpfulmonkey_datavizualizations.png';
+import helpfulMonkeySearch from '../assets/helpfulmonkey_searchsubreddits.png';
 
 /**
  * Styled Components
@@ -110,6 +114,7 @@ const CTAButton = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(2),
   padding: theme.spacing(1.5, 4),
   fontSize: '1rem',
+  borderRadius: theme.spacing(1),
 }));
 
 // How It Works Section Styling
@@ -133,6 +138,10 @@ const StepItem = styled(Box)(({ theme }) => ({
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
   },
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    textAlign: 'center',
+  },
 }));
 
 // Monkey Image Styling
@@ -143,14 +152,23 @@ const MonkeyImage = styled('img')(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     width: '60px',
     height: '60px',
+    marginRight: theme.spacing(0),
+    marginBottom: theme.spacing(1),
   },
+}));
+
+// Additional Image Styling for Features
+const FeatureImage = styled('img')(({ theme }) => ({
+  width: '60px',
+  height: '60px',
+  marginBottom: theme.spacing(2),
 }));
 
 function MainContent({ toggleMode, currentMode }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  
+
   // Reference to the SubredditAnalyzer component
   const analyzerRef = useRef(null);
 
@@ -258,13 +276,13 @@ function MainContent({ toggleMode, currentMode }) {
             Features
           </Typography>
           <Grid container spacing={4}>
+            {/* Feature 1: Search Subreddits */}
             <Grid item xs={12} sm={6} md={4}>
               <FeatureItem>
-                <img
-                  src="/icons/search.svg"
-                  alt="Search Subreddits"
-                  width="60"
-                  height="60"
+                <FeatureImage
+                  src={helpfulMonkeySearch}
+                  alt="Search Subreddits Feature"
+                  loading="lazy"
                 />
                 <Typography variant="h6" gutterBottom>
                   Search Subreddits
@@ -274,13 +292,13 @@ function MainContent({ toggleMode, currentMode }) {
                 </Typography>
               </FeatureItem>
             </Grid>
+            {/* Feature 2: Optimal Times */}
             <Grid item xs={12} sm={6} md={4}>
               <FeatureItem>
-                <img
-                  src="/icons/time.svg"
-                  alt="Optimal Times"
-                  width="60"
-                  height="60"
+                <FeatureImage
+                  src={helpfulMonkeyBestTime}
+                  alt="Optimal Times Feature"
+                  loading="lazy"
                 />
                 <Typography variant="h6" gutterBottom>
                   Optimal Times
@@ -290,13 +308,13 @@ function MainContent({ toggleMode, currentMode }) {
                 </Typography>
               </FeatureItem>
             </Grid>
+            {/* Feature 3: Data Visualization */}
             <Grid item xs={12} sm={6} md={4}>
               <FeatureItem>
-                <img
-                  src="/icons/chart.svg"
-                  alt="Data Visualization"
-                  width="60"
-                  height="60"
+                <FeatureImage
+                  src={helpfulMonkeyDataViz}
+                  alt="Data Visualization Feature"
+                  loading="lazy"
                 />
                 <Typography variant="h6" gutterBottom>
                   Data Visualization
@@ -306,7 +324,23 @@ function MainContent({ toggleMode, currentMode }) {
                 </Typography>
               </FeatureItem>
             </Grid>
-            {/* Add more features as needed */}
+            {/* Additional Feature (Optional) */}
+            {/* <Grid item xs={12} sm={6} md={4}>
+              <FeatureItem>
+                <FeatureImage
+                  src="/icons/another-feature.svg"
+                  alt="Another Feature"
+                  width="60"
+                  height="60"
+                />
+                <Typography variant="h6" gutterBottom>
+                  Another Feature
+                </Typography>
+                <Typography variant="body1">
+                  Description of another feature.
+                </Typography>
+              </FeatureItem>
+            </Grid> */}
           </Grid>
         </Container>
       </FeatureSection>
@@ -321,7 +355,7 @@ function MainContent({ toggleMode, currentMode }) {
             {/* Step 1 */}
             <Grid item xs={12} md={6}>
               <StepItem>
-                <MonkeyImage src={helpfulMonkey1} alt="Step 1: Search Subreddit" />
+                <MonkeyImage src={helpfulMonkey1} alt="Step 1: Search Subreddit" loading="lazy" />
                 <Box>
                   <Typography variant="h6" gutterBottom>
                     Step 1: Search Subreddit
@@ -335,7 +369,7 @@ function MainContent({ toggleMode, currentMode }) {
             {/* Step 2 */}
             <Grid item xs={12} md={6}>
               <StepItem>
-                <MonkeyImage src={helpfulMonkey2} alt="Step 2: Analyze Data" />
+                <MonkeyImage src={helpfulMonkey2} alt="Step 2: Analyze Data" loading="lazy" />
                 <Box>
                   <Typography variant="h6" gutterBottom>
                     Step 2: Analyze Data
@@ -349,7 +383,7 @@ function MainContent({ toggleMode, currentMode }) {
             {/* Step 3 */}
             <Grid item xs={12} md={6}>
               <StepItem>
-                <MonkeyImage src={helpfulMonkey3} alt="Step 3: Optimize Your Posts" />
+                <MonkeyImage src={helpfulMonkey3} alt="Step 3: Optimize Your Posts" loading="lazy" />
                 <Box>
                   <Typography variant="h6" gutterBottom>
                     Step 3: Optimize Your Posts
@@ -363,7 +397,7 @@ function MainContent({ toggleMode, currentMode }) {
             {/* Step 4 */}
             <Grid item xs={12} md={6}>
               <StepItem>
-                <MonkeyImage src={helpfulMonkey1} alt="Step 4: Track Performance" />
+                <MonkeyImage src={helpfulMonkey4} alt="Step 4: Track Performance" loading="lazy" />
                 <Box>
                   <Typography variant="h6" gutterBottom>
                     Step 4: Track Performance
@@ -377,6 +411,7 @@ function MainContent({ toggleMode, currentMode }) {
           </Grid>
         </Container>
       </HowItWorksSection>
+
 
       {/* Main Analyzer Section */}
       <Container maxWidth="md" sx={{ mt: 4, mb: 4 }} ref={analyzerRef}>
