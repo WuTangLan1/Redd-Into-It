@@ -7,7 +7,7 @@ const getTheme = (mode) =>
     palette: {
       mode,
       primary: {
-        main: mode === 'light' ? '#1976d2' : '#90caf9',
+        main: mode === 'light' ? '#FF5700' : '#FF5700',
       },
       secondary: {
         main: mode === 'light' ? '#dc004e' : '#f48fb1',
@@ -17,7 +17,7 @@ const getTheme = (mode) =>
         paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
       },
       text: {
-        primary: mode === 'light' ? '#000000' : '#ffffff',
+        primary: mode === 'light' ? '#000000' : '#E6E5E3',
         secondary: mode === 'light' ? '#555555' : '#bbbbbb',
       },
     },
