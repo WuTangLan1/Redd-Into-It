@@ -177,7 +177,6 @@ function SubredditAnalyzer() {
                 height: '56px',
                 transition: 'transform 0.2s, background-color 0.2s',
                 '&:hover': {
-                  transform: 'scale(1.02)',
                   backgroundColor: (theme) => theme.palette.primary.dark,
                 },
               }}

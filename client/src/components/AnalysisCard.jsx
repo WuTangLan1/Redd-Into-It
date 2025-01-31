@@ -41,9 +41,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: theme.spacing(2),
   background: theme.palette.background.paper,
   transition: 'transform 0.3s',
-  '&:hover': {
-    transform: 'scale(1.02)',
-  },
 }));
 
 // Header Section Styling

@@ -395,7 +395,7 @@ function MainContent({ toggleMode, currentMode }) {
 
 
       {/* Main Analyzer Section */}
-      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }} ref={analyzerRef}>
+      <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }} ref={analyzerRef}>
         <SubredditAnalyzer id="analyze" />
       </Container>
 
